@@ -1,0 +1,19 @@
+{
+  "name": "mercadofichajes",
+  "version": "1.0.0",
+  "description": "Gestión de Fichajes: Transacciones de jugadores entre equipo, cálculo de la transacción en función del valor del jugador...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FIS-Equipo-5/MercadoFichajes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FIS-Equipo-5/MercadoFichajes/issues"
+  },
+  "homepage": "https://github.com/FIS-Equipo-5/MercadoFichajes#readme"
+}
