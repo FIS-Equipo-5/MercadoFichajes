@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/FIS-Equipo-5/MercadoFichajes/issues"
   },
-  "homepage": "https://github.com/FIS-Equipo-5/MercadoFichajes#readme"
+  "homepage": "https://github.com/FIS-Equipo-5/MercadoFichajes#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
