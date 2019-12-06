@@ -44,11 +44,18 @@ app.use(bodyParser.json())
 app.post(BASE_API_PATH + "/transfer", (request, response) => {
     console.log(Date() + " -POST /transfer")
     var transfer = request.body;
-    var nextId = calculateNextId();
-    transfer.transfer_id=nextId;
-    transfers.push(transfer);
-    console.log(Date() + `-POST /transfer - New transfer with id: ${nextId} ` + JSON.stringify(transfer))
-    response.sendStatus(201);
+    
+    if(!checkTransfer(transfer) || transfer.transfer_id!=null){
+        console.log(Date() + ` -POST /transfer - The transfer not match with the expected input` + JSON.stringify(transfer));
+        response.sendStatus(400);
+        
+    }else{
+        var nextId = calculateNextId();
+        transfer.transfer_id=nextId;
+        transfers.push(transfer);
+        console.log(Date() + `-POST /transfer - New transfer with id: ${nextId} ` + JSON.stringify(transfer))
+        response.sendStatus(201);
+    }
 });
 
 //==========================================PUT==========================================//
@@ -56,20 +63,27 @@ app.put(BASE_API_PATH + "/transfer/:transfer_id", (request, response) => {
     console.log(Date() + ` -PUT /transfer/${request.params.transfer_id}`)
     var updateTransfer = request.body;
     var id = request.params.transfer_id;
-    var oldTransfer = transfers.find(element => element.transfer_id==id);
 
-    if(oldTransfer==null){
-        console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - Not found transfer with id: ${id}`);
-        response.sendStatus(404);
+    if(!checkTransfer(updateTransfer)){
+        console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - The transfer not match with the expected input` + JSON.stringify(updateTransfer));
+        response.sendStatus(400);
+    
     }else{
-        oldTransfer.team_origin_id = updateTransfer.team_origin_id;
-        oldTransfer.team_destiny_id = updateTransfer.team_destiny_id;
-        oldTransfer.transfer_date = updateTransfer.transfer_date;
-        oldTransfer.years_contract = updateTransfer.years_contract;
-        oldTransfer.cost = updateTransfer.cost;
-        oldTransfer.player_id = updateTransfer.player_id;
-        console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - Update transfer: `+ JSON.stringify(oldTransfer));
-        response.sendStatus(200)
+        var oldTransfer = transfers.find(element => element.transfer_id==id);
+        if(oldTransfer==null){
+            console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - Not found transfer with id: ${id}`);
+            response.sendStatus(404);
+        
+        }else{
+            oldTransfer.team_origin_id = updateTransfer.team_origin_id;
+            oldTransfer.team_destiny_id = updateTransfer.team_destiny_id;
+            oldTransfer.transfer_date = updateTransfer.transfer_date;
+            oldTransfer.years_contract = updateTransfer.years_contract;
+            oldTransfer.cost = updateTransfer.cost;
+            oldTransfer.player_id = updateTransfer.player_id;
+            console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - Update transfer: `+ JSON.stringify(oldTransfer));
+            response.sendStatus(200)
+        }
     }
 });
 
@@ -109,3 +123,8 @@ function calculateNextId(){
 function sortNumber(a, b) {
     return a - b;
   }
+
+function checkTransfer(transfer) {
+    //Una transferencia es válida si contiene team_destiny_id, transfer_date, cost y player_id
+    return transfer.team_destiny_id!=null && transfer.transfer_date!=null && transfer.cost!=null && transfer.player_id!=null;
+}
