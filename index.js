@@ -1,14 +1,14 @@
-//==========================================Ejercicio 1 y 2==========================================//
+//==========================================API TRANFERS==========================================//
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = (process.env.PORT || 3000);
 const BASE_API_PATH = "/api/v1"
 
-app.get('/',(request, response) => response.send('Hello world!'));
+app.get('/',(request, response) => response.send('Welcome to API tranfers!'));
 app.listen(port, () => console.log(`Example app listen on port ${port}!`));
 
 
-//==========================================Ejercicio 3.1: GET===============================================//
+//==========================================GET===============================================//
 const transfers= 
     [
         {"transfer_id": 1, "team_origin_id": 1, "team_destiny_id": 2, "transfer_date": "2012-04-23T18:25:43.511Z", "years_contract": 3, "cost": 29000000.32, "player_id": 1},
@@ -37,60 +37,62 @@ app.get(BASE_API_PATH + "/transfer/:transfer_id", (request, response) => {
     
 });
 
-//==========================================Ejercicio 3.2: POST==========================================//
+//==========================================POST==========================================//
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 
 app.post(BASE_API_PATH + "/transfer", (request, response) => {
-    console.log(Date() + " -POST /transfers")
+    console.log(Date() + " -POST /transfer")
     var transfer = request.body;
     var nextId = calculateNextId();
-    transfer.id=nextId;
+    transfer.transfer_id=nextId;
     transfers.push(transfer);
-    console.log(Date() + `-POST /transfers - New transfer with id: ${nextId} ` + JSON.stringify(transfer))
+    console.log(Date() + `-POST /transfer - New transfer with id: ${nextId} ` + JSON.stringify(transfer))
     response.sendStatus(201);
 });
 
-//==========================================Ejercicio 4: Persistencia con nedb==========================================//
+//==========================================PUT==========================================//
+app.put(BASE_API_PATH + "/transfer/:transfer_id", (request, response) => {
+    console.log(Date() + ` -PUT /transfer/${request.params.transfer_id}`)
+    var updateTransfer = request.body;
+    var id = request.params.transfer_id;
+    var oldTransfer = transfers.find(element => element.transfer_id==id);
 
-//==========================================Ejercicio 5.1: PUT==========================================//
-app.put(BASE_API_PATH + "/contact/:id", (request, response) => {
-    console.log(Date() + ` -PUT /contact/${request.params.id}`)
-    var updateContact = request.body;
-    var id = request.params.id;
-    var oldContact = contacts.find(element => element.id==id);
-
-    if(oldContact==null){
-        console.log(Date() + ` -PUT /contacts - Not found contact with id: ${id}`);
+    if(oldTransfer==null){
+        console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - Not found transfer with id: ${id}`);
         response.sendStatus(404);
     }else{
-        oldContact.name = updateContact.name;
-        oldContact.phone = updateContact.phone;
-        console.log(Date() + ` -PUT /contact/${request.params.id} - Update contact: `+ JSON.stringify(oldContact));
-        response.sendStatus(202)
+        oldTransfer.team_origin_id = updateTransfer.team_origin_id;
+        oldTransfer.team_destiny_id = updateTransfer.team_destiny_id;
+        oldTransfer.transfer_date = updateTransfer.transfer_date;
+        oldTransfer.years_contract = updateTransfer.years_contract;
+        oldTransfer.cost = updateTransfer.cost;
+        oldTransfer.player_id = updateTransfer.player_id;
+        console.log(Date() + ` -PUT /transfer/${request.params.transfer_id} - Update transfer: `+ JSON.stringify(oldTransfer));
+        response.sendStatus(200)
     }
 });
 
-//==========================================Ejercicio 5.2: DELETE==========================================//
-app.delete(BASE_API_PATH + "/contact/:id", (request, response) => {
-    console.log(Date() + ` -DELETE /contact/${request.params.id}`);
-    var id = request.params.id;
-    var index = contacts.findIndex(element => element.id==id);
+//==========================================DELETE==========================================//
+app.delete(BASE_API_PATH + "/transfer/:transfer_id", (request, response) => {
+    console.log(Date() + ` -DELETE /transfer/${request.params.transfer_id}`);
+    var id = request.params.transfer_id;
+    var index = transfers.findIndex(element => element.transfer_id==id);
     
     if(index==-1){
-        console.log(Date() + ` -DELETE /contact/${request.params.id} - Not found contact with id: ${id}`);
+        console.log(Date() + ` -DELETE /transfer/${request.params.transfer_id} - Not found transfer with id: ${id}`);
         response.sendStatus(404);
     }else{
-        contacts.splice(index,1);
-        console.log(Date() + ` -DELETE /contact/${request.params.id} - Delete contact with id: ${id} `);
-        response.sendStatus(200);
+        transfers.splice(index,1);
+        console.log(Date() + ` -DELETE /transfer/${request.params.transfer_id} - Delete transfer with id: ${id} `);
+        response.sendStatus(204);
     }
 });
 
-app.delete(BASE_API_PATH + "/contacts", (request, response) => {
-    console.log(Date() + " -DELETE /contacts");
+app.delete(BASE_API_PATH + "/transfers", (request, response) => {
+    console.log(Date() + " -DELETE /transfers");
     contacts.length=0;
-    response.sendStatus(200);
+    response.sendStatus(204);
 })
 
 //=============================FUNCIONALIDAD EXTRA=============================//
