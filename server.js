@@ -15,10 +15,6 @@ app.use(bodyParser.json())
 const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
 
-//API controllers
-const BASE_API_PATH = "/api/v1"
-const transfersCtl=require("./app/controllers/transferCtl.js");
-
 mongoose.Promise = global.Promise;
 
 // Connecting to the database
@@ -31,18 +27,10 @@ mongoose.connect(dbConfig.url, {
     process.exit();
 });
 
+// Require Transfer routes
+require('./app/routes/transfer.routes.js')(app);
+
 // listen for requests
 app.listen(dbConfig.port, () => {
     console.log("Server is listening on port " + dbConfig.port);
 });
-
-//==========================================API TRANFERS==========================================//
-app.get('/',(request, response) => response.send('Welcome to API tranfers!'));
-app.get(BASE_API_PATH+"/transfers",transfersCtl.getAllTransfers);
-app.get(BASE_API_PATH+"/transfer/:transfer_id",transfersCtl.getTransferById);
-app.get(BASE_API_PATH+"/transfers/player/:player_id",transfersCtl.getAllTransfersByPlayerId);
-app.get(BASE_API_PATH+"/transfers/team/:team_destiny_id",transfersCtl.getAllTransfersByTeamId);
-app.post(BASE_API_PATH+"/transfer",transfersCtl.postTransfer);
-app.put(BASE_API_PATH+"/transfer/:transfer_id",transfersCtl.updateTransfer);
-app.delete(BASE_API_PATH+"/transfer/:transfer_id",transfersCtl.deleteTransferById);
-app.delete(BASE_API_PATH+"/transfers",transfersCtl.deleteAllTransfers);
