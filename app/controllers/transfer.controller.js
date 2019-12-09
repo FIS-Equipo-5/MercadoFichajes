@@ -46,6 +46,36 @@ module.exports.getTransferById= function(request, response){
     
 };
 
+module.exports.getAllTransfersByPlayerId= function(request, response){
+    console.log(Date() + ` -GET transfers/player/${request.params.player_id}`)
+    
+    Transfer.find({player_id: request.params.player_id})
+    .then(transfers => {
+        console.log(Date() + " SUCCESS: -GET /transfers")
+        response.send(transfers);
+    }).catch(err => {
+        console.log(Date() + " ERROR: -GET /transfers , Some error occurred while retrieving transfers")
+        response.status(500).send({
+            message: err.message || "Some error occurred while retrieving transfers."
+        });
+    })
+}
+
+module.exports.getAllTransfersByTeamId= function(request, response){
+    console.log(Date() + ` -GET transfers/team/${request.params.destiny_team_id}`)
+    
+    Transfer.find({destiny_team_id: request.params.destiny_team_id})
+    .then(transfers => {
+        console.log(Date() + " SUCCESS: -GET /transfers")
+        response.send(transfers);
+    }).catch(err => {
+        console.log(Date() + " ERROR: -GET /transfers , Some error occurred while retrieving transfers")
+        response.status(500).send({
+            message: err.message || "Some error occurred while retrieving transfers."
+        });
+    })
+}
+
 //==========================================POST==========================================//
 
 module.exports.postTransfer= function(request, response){

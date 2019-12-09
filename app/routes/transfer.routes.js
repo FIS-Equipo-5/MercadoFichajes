@@ -7,7 +7,7 @@ module.exports = (app) => {
     app.get(BASE_API_PATH+"/transfers",transferController.getAllTransfers);
     app.get(BASE_API_PATH+"/transfer/:transfer_id",transferController.getTransferById);
     app.get(BASE_API_PATH+"/transfers/player/:player_id",transferController.getAllTransfersByPlayerId);
-    app.get(BASE_API_PATH+"/transfers/team/:team_destiny_id",transferController.getAllTransfersByTeamId);
+    app.get(BASE_API_PATH+"/transfers/team/:destiny_team_id",transferController.getAllTransfersByTeamId);
     app.post(BASE_API_PATH+"/transfer",transferController.postTransfer);
     app.put(BASE_API_PATH+"/transfer/:transfer_id",transferController.updateTransfer);
     app.delete(BASE_API_PATH+"/transfer/:transfer_id",transferController.deleteTransferById);
