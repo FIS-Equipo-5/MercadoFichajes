@@ -24,9 +24,9 @@ const TransferSchema = mongoose.Schema({
     player_id: {
         type: Number,
         required: true
-    },
-
-    timestamps: true
-});
+    }}
+    ,{
+        timestamps: true
+    });
 
 module.exports = mongoose.model('Transfer', TransferSchema);
