@@ -34,3 +34,11 @@ require('./app/routes/transfer.routes.js')(app);
 app.listen(dbConfig.port, () => {
     console.log("Server is listening on port " + dbConfig.port);
 });
+
+//Called hooks which runs before something.
+beforeEach((done) => {
+    mongoose.connection.collections.transfers.drop(() => {
+         //this function runs after the drop is completed
+        done(); //go ahead everything is done now.
+    }); 
+});

@@ -4,7 +4,7 @@
   "description": "Gestión de Fichajes: Transacciones de jugadores entre equipo, cálculo de la transacción en función del valor del jugador...",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node server.js"
   },
   "repository": {
@@ -21,6 +21,7 @@
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mocha": "^6.2.2",
     "mongoose": "^5.7.14"
   }
 }
