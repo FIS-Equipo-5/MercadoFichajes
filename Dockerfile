@@ -8,6 +8,8 @@ COPY package.json .
 RUN npm install --quiet
 
 COPY server.js .
+COPY db.js .
+COPY index.js .
 COPY .env .
 COPY app ./app
 COPY config ./config
