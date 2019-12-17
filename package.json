@@ -4,7 +4,7 @@
   "description": "Gestión de Fichajes: Transacciones de jugadores entre equipo, cálculo de la transacción en función del valor del jugador...",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest ; mocha",
     "start": "node index.js"
   },
   "repository": {
@@ -26,6 +26,7 @@
   "devDependencies": {
     "jest": "^24.9.0",
     "jest-extended": "^0.11.2",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "mocha": "^6.2.2"
   }
 }
