@@ -7,8 +7,8 @@ services:
 before_install:
   - wget -qo-  https://toolbelt.heroku.com/install-ubuntu.sh | sh
 install:
-  - npm test
   - npm install
+  - npm test
 script:
   docker build -t transfers .
 deploy:
