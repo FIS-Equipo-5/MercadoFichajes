@@ -1,5 +1,6 @@
 const Transfer = require('../models/transfer.model.js');
-
+const playersApi = require('../integration/players.integration.js');
+const teamsApi = require('../integration/teams.integration.js');
 //==========================================GET===============================================//
 
 module.exports.getAllTransfers= function(request, response){
@@ -18,7 +19,6 @@ module.exports.getAllTransfers= function(request, response){
         }
     });
 }
-
 
 module.exports.getTransferById= function(request, response){
     console.log(Date() + ` -GET /transfer/${request.params.transfer_id}`)
@@ -86,7 +86,7 @@ module.exports.getAllTransfersByTeamId= function(request, response){
 
 //==========================================POST==========================================//
 
-module.exports.postTransfer= function(request, response){
+module.exports.postTransfer= async function(request, response){
     console.log(Date() + " -POST /transfer")
     // Validate request
     if(!checkTransfer(request.body)) {
@@ -99,7 +99,7 @@ module.exports.postTransfer= function(request, response){
     var transfer = request.body;
 
     // Save Transfer in the database
-    Transfer.create(transfer, (err, new_transfer) => {
+    Transfer.create(transfer, async (err, new_transfer) => {
         if(err){
             console.log(Date() + ` ERROR: -POST /transfer - Error registering new transfer`);
             response.status(500).send({
@@ -107,10 +107,28 @@ module.exports.postTransfer= function(request, response){
             });
         }else{
             console.log(Date() + ` SUCCESS: -POST /transfer`)
+            
+            //UPDATE EQUIPO Y VALOR DEL JUGADOR
+            let players = await playersApi.getPlayerById(transfer.player_id)
+            let player = players[0]
+            player.team_id = transfer.destiny_team_id
+            player.value = transfer.cost
+            player.goals.assists = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin asistencias
+            player.cards.red = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin tarjetas rojas
+            await playersApi.updatePlayer(player)
+
+            //TODO: UPDATE VALOR DE LOS EQUIPOS DE ORIGEN Y DESTINO
+
             response.status(201).send(new_transfer.cleanup());
         }
     });
 }
+
+
+// let arrayPlayers = await playersApi.getPlayers();
+// let player = await playersApi.getPlayerById("5e0244ee415f171beb137e0a");
+// let arrayTeams = await teamsApi.getTeams();
+// let team = await teamsApi.getTeamByName("Sevilla FC");
 
 //==========================================PUT==========================================//
 
