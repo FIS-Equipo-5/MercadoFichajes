@@ -1,5 +1,6 @@
 const app = require('../server.js');
 const Transfer = require('../app/models/transfer.model');
+const playersApi = require('../app/integration/players.integration.js');
 const request = require('supertest');
 
 const BASE_API_PATH = "/api/v1"
@@ -62,10 +63,9 @@ describe("Transfer API", () => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body.origin_team_id).toBe(8);
                 expect(response.body.transfer_date).toBe("2019-08-23T18:25:43.511Z");
-                expect(response.body.player_id).toBe(6);
                 expect(response.body.contract_years).toBe(2);
                 expect(response.body.cost).toBe(100044);
-                expect(response.body.player_id).toBe(6);
+                expect(response.body.player_id).toBe("6");
                 expect(dbFind).toBeCalledWith(id.toString(), expect.any(Function));
             });
         });
@@ -179,6 +179,7 @@ describe("Transfer API", () => {
 
     describe('POST /transfer', () => {
         let transfer_post ={"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2019-08-23T18:25:43.511Z", "contract_years": 3, "cost": 2000000, "player_id": 1};
+        let player = [{"goals":{"total":2,"assists":4},"cards":{"yellow":4,"red":4},"_id":"5e03b8ac777eb50658815fd3","player_name":"Diego Carlos","firstname":"Diego","lastname":"Carlos","position":"Deffender","nationality":"Brazil","value":15000000,"team_id":4}];
 
         beforeEach(() => {
             dbInsert = jest.spyOn(Transfer, "create");
@@ -187,6 +188,18 @@ describe("Transfer API", () => {
         it('Should add a new transfer if everything is fine', async () => {
             dbInsert.mockImplementation((c, callback) => {
                 callback(false, new Transfer(transfer_post));
+            });
+
+
+            getPlayer = jest.spyOn(playersApi, "getPlayerById");
+            updatePlayer = jest.spyOn(playersApi, "updatePlayer");
+
+            getPlayer.mockImplementation((id) => {
+                return player;
+            });
+
+            updatePlayer.mockImplementation((obj) => {
+                return true;
             });
 
             return request(app).post(BASE_API_PATH + '/transfer').send(transfer_post).then((response) => {
