@@ -1,6 +1,7 @@
 const app = require('../server.js');
 const Transfer = require('../app/models/transfer.model');
 const playersApi = require('../app/integration/players.integration.js');
+const teamsApi = require('../app/integration/teams.integration.js');
 const request = require('supertest');
 
 const BASE_API_PATH = "/api/v1"
@@ -180,6 +181,7 @@ describe("Transfer API", () => {
     describe('POST /transfer', () => {
         let transfer_post ={"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2019-08-23T18:25:43.511Z", "contract_years": 3, "cost": 2000000, "player_id": 1};
         let player = [{"goals":{"total":2,"assists":4},"cards":{"yellow":4,"red":4},"_id":"5e03b8ac777eb50658815fd3","player_name":"Diego Carlos","firstname":"Diego","lastname":"Carlos","position":"Deffender","nationality":"Brazil","value":15000000,"team_id":4}];
+        let team = {"team_id": 354345435345, "name": "Sevilla FC", "code": 123, "logo": "https://media.api-football.com/teams/541.png", "country": "Spain", "founded": 1902, "venue_name": "Estadio Ramón Sánchez-Pizjuán", "venue_surface": "grass", "venue_address": "Calle Sevilla FC s/n", "venue_city": "Sevilla", "venue_capacity": 42500, "budget": 85000000, "value": 250000000};
 
         beforeEach(() => {
             dbInsert = jest.spyOn(Transfer, "create");
@@ -194,11 +196,23 @@ describe("Transfer API", () => {
             getPlayer = jest.spyOn(playersApi, "getPlayerById");
             updatePlayer = jest.spyOn(playersApi, "updatePlayer");
 
+            getTeam = jest.spyOn(teamsApi, "getTeamById");
+            updateTeam = jest.spyOn(teamsApi, "updateTeam");
+
+
             getPlayer.mockImplementation((id) => {
                 return player;
             });
 
             updatePlayer.mockImplementation((obj) => {
+                return true;
+            });
+
+            getTeam.mockImplementation((id) => {
+                return team;
+            });
+
+            updateTeam.mockImplementation((obj) => {
                 return true;
             });
 
