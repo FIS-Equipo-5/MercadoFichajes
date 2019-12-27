@@ -97,6 +97,28 @@ module.exports.postTransfer= async function(request, response){
     }
 
     var transfer = request.body;
+    let player
+    let originTeam
+    let destinyTeam
+    
+    //GET EQUIPO Y JUGADOR
+    try {
+        let players = await playersApi.getPlayerById(transfer.player_id)
+        console.log("player: "+ player)
+        if(players.length == 0){
+            return response.status(404).send({
+                message: "Not found player with id: " + transfer.player_id
+            });
+        }
+        player = players[0]
+        originTeam = await teamsApi.getTeamById(transfer.origin_team_id)
+        destinyTeam = await teamsApi.getTeamById(transfer.destiny_team_id)
+    } catch(error) {
+        console.error(error);
+        return response.status(error.statusCode).send({
+            message: error.message || "Some error occurred while creating the Transfer."
+        });
+    }
 
     // Save Transfer in the database
     Transfer.create(transfer, async (err, new_transfer) => {
@@ -108,27 +130,24 @@ module.exports.postTransfer= async function(request, response){
         }else{
             console.log(Date() + ` SUCCESS: -POST /transfer`)
             
-            //UPDATE EQUIPO Y VALOR DEL JUGADOR
-            let players = await playersApi.getPlayerById(transfer.player_id)
-            let player = players[0]
+            //UPDATE EQUIPO DEL JUGADOR
             player.team_id = transfer.destiny_team_id
-            player.value = transfer.cost
-            player.goals.assists = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin asistencias
-            player.cards.red = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin tarjetas rojas
+            player.goals.assists = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin asistencias. Eliminar cuando lo diga nono
+            player.cards.red = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin tarjetas rojas. Eliminar cuando lo diga nono
             await playersApi.updatePlayer(player)
 
-            //TODO: UPDATE VALOR DE LOS EQUIPOS DE ORIGEN Y DESTINO
+            //UPDATE PRESUPUESTO Y VALOR DE LOS EQUIPOS DE ORIGEN Y DESTINO
+            originTeam.budget = originTeam.budget + transfer.cost
+            destinyTeam.budget = destinyTeam.budget - transfer.cost
+            originTeam.value = originTeam.value - player.value
+            destinyTeam.value = destinyTeam.value + player.value
+            await teamsApi.updateTeam(originTeam)
+            await teamsApi.updateTeam(destinyTeam)
 
             response.status(201).send(new_transfer.cleanup());
         }
     });
 }
-
-
-// let arrayPlayers = await playersApi.getPlayers();
-// let player = await playersApi.getPlayerById("5e0244ee415f171beb137e0a");
-// let arrayTeams = await teamsApi.getTeams();
-// let team = await teamsApi.getTeamByName("Sevilla FC");
 
 //==========================================PUT==========================================//
 
