@@ -172,9 +172,9 @@ module.exports.updateTransfer= async function(request, response){
         originTeam = await teamsApi.getTeamById(new_transfer.origin_team_id)
         destinyTeam = await teamsApi.getTeamById(new_transfer.destiny_team_id)
         old_transfer = await getTransferById(request.params.transfer_id)
-    }catch(err){
+    }catch(error){
         console.error(error);
-        return response.status(error.statusCode).send({
+        return response.status(error.statusCode || 404).send({
             message: error.message || "Some error occurred while creating the Transfer."
         });
     }
@@ -212,14 +212,10 @@ module.exports.updateTransfer= async function(request, response){
             //Actualizamos los presupuestos de los equipos implicados
             old_cost = old_transfer.cost
             let diff = old_cost-new_transfer.cost
-            console.log("old_cost: "+old_cost)
-            console.log("diff: "+diff)
 
             if(diff != 0){
                 originTeam.budget = originTeam.budget - diff
                 destinyTeam.budget = destinyTeam.budget + diff
-                console.log("originTeam.budget: "+originTeam.budget)
-                console.log("destinyTeam.budget: "+destinyTeam.budget)
                 await teamsApi.updateTeam(originTeam)
                 await teamsApi.updateTeam(destinyTeam)
             }
@@ -284,19 +280,18 @@ function checkTransfer(transfer) {
         && transfer.player_id!=null;
 }
 
-function getTransferById(transfer_id){
+async function getTransferById(transfer_id){
     console.log(Date() + ` - getTransferById: ${transfer_id}`)
 
     try{
         console.log(Date() + ` SUCCESS: -getTransferById: ${transfer_id}`)
-        let transfer = Transfer.findById(transfer_id)
-        if(!transfer){
+        let transfer = await Transfer.findById(transfer_id)
+        if(transfer==null){
             throw new Error("Transfer not found with id " + transfer_id);
         }
         return transfer
     }catch(err){
         console.log(Date() + ` ERROR: -getTransferById: ${transfer_id} - Some error occurred while retrieving transfer with id: ${transfer_id}`)
-        console.log(err)
         throw err;
     }
 }
