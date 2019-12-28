@@ -22,7 +22,7 @@ const TransferSchema = mongoose.Schema({
         required: true
     },
     player_id: {
-        type: Number,
+        type: String,
         required: true
     }}
     ,{

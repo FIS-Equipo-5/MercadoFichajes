@@ -1,5 +1,6 @@
 const Transfer = require('../models/transfer.model.js');
-
+const playersApi = require('../integration/players.integration.js');
+const teamsApi = require('../integration/teams.integration.js');
 //==========================================GET===============================================//
 
 module.exports.getAllTransfers= function(request, response){
@@ -18,7 +19,6 @@ module.exports.getAllTransfers= function(request, response){
         }
     });
 }
-
 
 module.exports.getTransferById= function(request, response){
     console.log(Date() + ` -GET /transfer/${request.params.transfer_id}`)
@@ -86,7 +86,7 @@ module.exports.getAllTransfersByTeamId= function(request, response){
 
 //==========================================POST==========================================//
 
-module.exports.postTransfer= function(request, response){
+module.exports.postTransfer= async function(request, response){
     console.log(Date() + " -POST /transfer")
     // Validate request
     if(!checkTransfer(request.body)) {
@@ -97,9 +97,31 @@ module.exports.postTransfer= function(request, response){
     }
 
     var transfer = request.body;
+    let player
+    let originTeam
+    let destinyTeam
+    
+    //GET EQUIPO Y JUGADOR
+    try {
+        let players = await playersApi.getPlayerById(transfer.player_id)
+        console.log("player: "+ player)
+        if(players.length == 0){
+            return response.status(404).send({
+                message: "Not found player with id: " + transfer.player_id
+            });
+        }
+        player = players[0]
+        originTeam = await teamsApi.getTeamById(transfer.origin_team_id)
+        destinyTeam = await teamsApi.getTeamById(transfer.destiny_team_id)
+    } catch(error) {
+        console.error(error);
+        return response.status(error.statusCode).send({
+            message: error.message || "Some error occurred while creating the Transfer."
+        });
+    }
 
     // Save Transfer in the database
-    Transfer.create(transfer, (err, new_transfer) => {
+    Transfer.create(transfer, async (err, new_transfer) => {
         if(err){
             console.log(Date() + ` ERROR: -POST /transfer - Error registering new transfer`);
             response.status(500).send({
@@ -107,6 +129,21 @@ module.exports.postTransfer= function(request, response){
             });
         }else{
             console.log(Date() + ` SUCCESS: -POST /transfer`)
+            
+            //UPDATE EQUIPO DEL JUGADOR
+            player.team_id = transfer.destiny_team_id
+            player.goals.assists = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin asistencias. Eliminar cuando lo diga nono
+            player.cards.red = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin tarjetas rojas. Eliminar cuando lo diga nono
+            await playersApi.updatePlayer(player)
+
+            //UPDATE PRESUPUESTO Y VALOR DE LOS EQUIPOS DE ORIGEN Y DESTINO
+            originTeam.budget = originTeam.budget + transfer.cost
+            destinyTeam.budget = destinyTeam.budget - transfer.cost
+            originTeam.value = originTeam.value - player.value
+            destinyTeam.value = destinyTeam.value + player.value
+            await teamsApi.updateTeam(originTeam)
+            await teamsApi.updateTeam(destinyTeam)
+
             response.status(201).send(new_transfer.cleanup());
         }
     });
@@ -114,15 +151,31 @@ module.exports.postTransfer= function(request, response){
 
 //==========================================PUT==========================================//
 
-module.exports.updateTransfer= function(request, response){
+module.exports.updateTransfer= async function(request, response){
     console.log(Date() + ` -PUT /transfer/${request.params.transfer_id}`)
 
-    var transfer = request.body
+    var new_transfer = request.body
     // Validate request
-    if(!checkTransfer(transfer)) {
+    if(!checkTransfer(new_transfer)) {
         console.log(Date() + ` ERROR: -PUT /transfer/${request.params.transfer_id} - The transfer not match with the expected input ` + JSON.stringify(request.body));
         return response.status(400).send({
             message: "Transfer not match with the expected input"
+        });
+    }
+
+    //Recuperamos el antiguo coste de la transferencia
+    let old_transfer
+    let old_cost
+    let originTeam
+    let destinyTeam
+    try{
+        originTeam = await teamsApi.getTeamById(new_transfer.origin_team_id)
+        destinyTeam = await teamsApi.getTeamById(new_transfer.destiny_team_id)
+        old_transfer = await getTransferById(request.params.transfer_id)
+    }catch(error){
+        console.error(error);
+        return response.status(error.statusCode || 404).send({
+            message: error.message || "Some error occurred while creating the Transfer."
         });
     }
 
@@ -134,7 +187,7 @@ module.exports.updateTransfer= function(request, response){
         contract_years: request.body.contract_years, 
         cost: request.body.cost, 
         player_id: request.body.player_id, 
-    }, {new: true}, (err, transfer) => {
+    }, {new: true}, async (err, new_transfer) => {
 
         if(err) {
             if(err.kind === 'ObjectId') {
@@ -148,14 +201,26 @@ module.exports.updateTransfer= function(request, response){
                     message: "Error updating transfer with id " + request.params.transfer_id
                 });
         }else{
-            if(!transfer) {
+            if(!new_transfer) {
                 console.log(Date() + ` ERROR: -PUT /transfer/${request.params.transfer_id} - Not found transfer with id: ${request.params.transfer_id}`);
                 return response.status(404).send({
                     message: "Transfer not found with id " + request.params.transfer_id
                 });            
             }
             console.log(Date() + ` SUCCESS: -PUT /transfer/${request.params.transfer_id}`)
-            response.send(transfer.cleanup());
+
+            //Actualizamos los presupuestos de los equipos implicados
+            old_cost = old_transfer.cost
+            let diff = old_cost-new_transfer.cost
+
+            if(diff != 0){
+                originTeam.budget = originTeam.budget - diff
+                destinyTeam.budget = destinyTeam.budget + diff
+                await teamsApi.updateTeam(originTeam)
+                await teamsApi.updateTeam(destinyTeam)
+            }
+
+            response.send(new_transfer.cleanup());
         }
     });
 }
@@ -213,4 +278,20 @@ function checkTransfer(transfer) {
         && transfer.transfer_date!=null 
         && transfer.cost!=null 
         && transfer.player_id!=null;
+}
+
+async function getTransferById(transfer_id){
+    console.log(Date() + ` - getTransferById: ${transfer_id}`)
+
+    try{
+        console.log(Date() + ` SUCCESS: -getTransferById: ${transfer_id}`)
+        let transfer = await Transfer.findById(transfer_id)
+        if(transfer==null){
+            throw new Error("Transfer not found with id " + transfer_id);
+        }
+        return transfer
+    }catch(err){
+        console.log(Date() + ` ERROR: -getTransferById: ${transfer_id} - Some error occurred while retrieving transfer with id: ${transfer_id}`)
+        throw err;
+    }
 }
