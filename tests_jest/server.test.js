@@ -244,6 +244,8 @@ describe("Transfer API", () => {
     describe('PUT /transfer/:transfer_id', () => {
         
         let transfer_put = new Transfer({"origin_team_id": 2, "destiny_team_id": 1, "transfer_date": "2013-08-23T18:25:43.511Z", "contract_years": 1, "cost": 1000000, "player_id": 1});
+        let transfer_old = new Transfer({"origin_team_id": 2, "destiny_team_id": 1, "transfer_date": "2013-08-23T18:25:43.511Z", "contract_years": 1, "cost": 500, "player_id": 1});
+        let team = {"team_id": 354345435345, "name": "Sevilla FC", "code": 123, "logo": "https://media.api-football.com/teams/541.png", "country": "Spain", "founded": 1902, "venue_name": "Estadio Ramón Sánchez-Pizjuán", "venue_surface": "grass", "venue_address": "Calle Sevilla FC s/n", "venue_city": "Sevilla", "venue_capacity": 42500, "budget": 85000000, "value": 250000000};
         let id = transfer_put._id
         let expected_transfer = {origin_team_id: transfer_put.origin_team_id, 
             destiny_team_id: transfer_put.destiny_team_id, 
@@ -254,11 +256,27 @@ describe("Transfer API", () => {
 
         beforeEach(() => {
             dbUpdate = jest.spyOn(Transfer, "findByIdAndUpdate");
+            getTeam = jest.spyOn(teamsApi, "getTeamById");
+            updateTeam = jest.spyOn(teamsApi, "updateTeam");
+            getTransferById = jest.spyOn(Transfer, "findById");
         });
 
         it('Should update a transfer if everything is fine', async () => {
+
             dbUpdate.mockImplementation((a,b,c, callback) => {
                 callback(false, transfer_put);
+            });
+
+            getTeam.mockImplementation((id) => {
+                return team;
+            });
+
+            updateTeam.mockImplementation((obj) => {
+                return true;
+            });
+
+            getTransferById.mockImplementation((id) => {
+                return team;
             });
             
             return request(app).put(BASE_API_PATH + '/transfer/'+id).send(transfer_put).then((response) => {
