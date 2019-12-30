@@ -3,6 +3,7 @@ const Transfer = require('../app/models/transfer.model');
 const playersApi = require('../app/integration/players.integration.js');
 const teamsApi = require('../app/integration/teams.integration.js');
 const request = require('supertest');
+const jwt = require('jsonwebtoken');
 
 const BASE_API_PATH = "/api/v1"
 
@@ -17,12 +18,18 @@ describe("Transfer API", () => {
 
         beforeAll(() => {
             dbFind = jest.spyOn(Transfer, "find");
+            token = jest.spyOn(jwt, "verify");
             
         });
 
         it('Should return all transfers', async () => {
+            
             dbFind.mockImplementation((query, callback) => {
                 callback(null, transfers_temp);
+            });
+
+            token.mockImplementation((token, secretOrPublicKey, callback) => {
+                callback(false, "id");
             });
 
             return request(app).get(BASE_API_PATH + "/transfers").then((response) => {
