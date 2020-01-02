@@ -1,14 +1,14 @@
 const app = require('./server.js');
 const dbConnect = require('./db');
-const dbConfig = require('./config/database.config.js');
+const applicationConfig = require('./config/application.config.js');
 
 
-console.log("Starting API server at "+dbConfig.port);
+console.log("Starting API server at "+applicationConfig.applicationPort);
 
 dbConnect().then(
     () => {
-        app.listen(dbConfig.port);
-        console.log("Server is listening on port " + dbConfig.port);
+        app.listen(applicationConfig.applicationPort);
+        console.log("Server is listening on port " + applicationConfig.applicationPort);
     },
     err => {
         console.log("Connection error: "+err);
