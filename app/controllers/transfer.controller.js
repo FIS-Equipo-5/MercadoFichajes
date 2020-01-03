@@ -76,7 +76,7 @@ module.exports.getAllTransfersByTeamId= function(request, response){
                 message: err.message || "Some error occurred while retrieving transfers."
             });
         }else{
-            console.log(Date() + ` SUCCESS: -GET  /transfer/team/${request.params.player_id}`)
+            console.log(Date() + ` SUCCESS: -GET  /transfer/team/${request.params.destiny_team_id}`)
             response.send(transfers.map((transfers) => {
                 return transfers.cleanup();
             }));
@@ -88,6 +88,7 @@ module.exports.getAllTransfersByTeamId= function(request, response){
 
 module.exports.postTransfer= async function(request, response){
     console.log(Date() + " -POST /transfer")
+    let token = request.headers['x-access-token'];
     // Validate request
     if(!checkTransfer(request.body)) {
         console.log(Date() + ` ERROR: -POST /transfer - The transfer not match with the expected input ` + JSON.stringify(request.body));
@@ -103,7 +104,7 @@ module.exports.postTransfer= async function(request, response){
     
     //GET EQUIPO Y JUGADOR
     try {
-        let players = await playersApi.getPlayerById(transfer.player_id)
+        let players = await playersApi.getPlayerById(transfer.player_id, token)
         console.log("player: "+ player)
         if(players.length == 0){
             return response.status(404).send({
@@ -111,11 +112,11 @@ module.exports.postTransfer= async function(request, response){
             });
         }
         player = players[0]
-        originTeam = await teamsApi.getTeamById(transfer.origin_team_id)
-        destinyTeam = await teamsApi.getTeamById(transfer.destiny_team_id)
+        originTeam = await teamsApi.getTeamById(transfer.origin_team_id,token)
+        destinyTeam = await teamsApi.getTeamById(transfer.destiny_team_id,token)
     } catch(error) {
         console.error(error);
-        return response.status(error.statusCode).send({
+        return response.status(error.statusCode || 401).send({
             message: error.message || "Some error occurred while creating the Transfer."
         });
     }
@@ -134,15 +135,15 @@ module.exports.postTransfer= async function(request, response){
             player.team_id = transfer.destiny_team_id
             player.goals.assists = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin asistencias. Eliminar cuando lo diga nono
             player.cards.red = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin tarjetas rojas. Eliminar cuando lo diga nono
-            await playersApi.updatePlayer(player)
+            await playersApi.updatePlayer(player, token)
 
             //UPDATE PRESUPUESTO Y VALOR DE LOS EQUIPOS DE ORIGEN Y DESTINO
             originTeam.budget = originTeam.budget + transfer.cost
             destinyTeam.budget = destinyTeam.budget - transfer.cost
             originTeam.value = originTeam.value - player.value
             destinyTeam.value = destinyTeam.value + player.value
-            await teamsApi.updateTeam(originTeam)
-            await teamsApi.updateTeam(destinyTeam)
+            await teamsApi.updateTeam(originTeam,token)
+            await teamsApi.updateTeam(destinyTeam,token)
 
             response.status(201).send(new_transfer.cleanup());
         }
@@ -169,8 +170,8 @@ module.exports.updateTransfer= async function(request, response){
     let originTeam
     let destinyTeam
     try{
-        originTeam = await teamsApi.getTeamById(new_transfer.origin_team_id)
-        destinyTeam = await teamsApi.getTeamById(new_transfer.destiny_team_id)
+        originTeam = await teamsApi.getTeamById(new_transfer.origin_team_id,token)
+        destinyTeam = await teamsApi.getTeamById(new_transfer.destiny_team_id,token)
         old_transfer = await getTransferById(request.params.transfer_id)
     }catch(error){
         console.error(error);
@@ -216,8 +217,8 @@ module.exports.updateTransfer= async function(request, response){
             if(diff != 0){
                 originTeam.budget = originTeam.budget - diff
                 destinyTeam.budget = destinyTeam.budget + diff
-                await teamsApi.updateTeam(originTeam)
-                await teamsApi.updateTeam(destinyTeam)
+                await teamsApi.updateTeam(originTeam,token)
+                await teamsApi.updateTeam(destinyTeam,token)
             }
 
             response.send(new_transfer.cleanup());
