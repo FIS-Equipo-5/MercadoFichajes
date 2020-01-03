@@ -169,6 +169,7 @@ module.exports.updateTransfer= async function(request, response){
     let old_cost
     let originTeam
     let destinyTeam
+    let token = request.headers['x-access-token'];
     try{
         originTeam = await teamsApi.getTeamById(new_transfer.origin_team_id,token)
         destinyTeam = await teamsApi.getTeamById(new_transfer.destiny_team_id,token)
