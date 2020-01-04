@@ -6,20 +6,20 @@
 	},
 	"item": [
 		{
-			"name": "POST Auth Register",
+			"name": "POST /api/v1/users/register",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
 						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\" : \"robert\",\n\t\"email\": \"robert@mail.com\",\n\t\"password\" : \"password\" \n}\n",
+					"raw": "{\n\t\"name\": \"transfers\",\n\t\"email\": \"transfers@alumn.us.es\",\n\t\"password\": \"transfers\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -27,10 +27,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://fis-g5-auth.herokuapp.com/api/v1/users/register",
+					"raw": "https://fis-gr5-auth.herokuapp.com/api/v1/users/register",
 					"protocol": "https",
 					"host": [
-						"fis-g5-auth",
+						"fis-gr5-auth",
 						"herokuapp",
 						"com"
 					],
@@ -45,20 +45,20 @@
 			"response": []
 		},
 		{
-			"name": "POST Auth Authenticate",
+			"name": "POST api/v1/users/authenticate",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
 						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"email\": \"robert@mail.com\",\n\t\"password\" : \"password\" \n}\n\n",
+					"raw": "{\n\t\"name\": \"transfers\",\n\t\"email\": \"transfers@alumn.us.es\",\n\t\"password\": \"fis2019\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -66,10 +66,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://fis-g5-auth.herokuapp.com/api/v1/users/register",
+					"raw": "https://fis-gr5-auth.herokuapp.com/api/v1/users/authenticate",
 					"protocol": "https",
 					"host": [
-						"fis-g5-auth",
+						"fis-gr5-auth",
 						"herokuapp",
 						"com"
 					],
@@ -77,9 +77,10 @@
 						"api",
 						"v1",
 						"users",
-						"register"
+						"authenticate"
 					]
-				}
+				},
+				"description": "Generate token for the user"
 			},
 			"response": []
 		},
@@ -90,7 +91,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
@@ -119,7 +120,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
@@ -147,12 +148,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfers/player/5e03798cdd55f57bb7cd7b10",
+					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfers/player/5e109fc3d9e6f300105fdbf2",
 					"protocol": "https",
 					"host": [
 						"mercadofichajes",
@@ -164,7 +165,7 @@
 						"v1",
 						"transfers",
 						"player",
-						"5e03798cdd55f57bb7cd7b10"
+						"5e109fc3d9e6f300105fdbf2"
 					]
 				}
 			},
@@ -177,7 +178,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
@@ -207,12 +208,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfer/5dfff83491492f5897d56a87",
+					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfer/5e10bf0791492f5897e6c233",
 					"protocol": "https",
 					"host": [
 						"mercadofichajes",
@@ -223,7 +224,7 @@
 						"api",
 						"v1",
 						"transfer",
-						"5dfff83491492f5897d56a87"
+						"5e10bf0791492f5897e6c233"
 					]
 				}
 			},
@@ -242,13 +243,13 @@
 					},
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"origin_team_id\": 446546464698, \n\t\"destiny_team_id\": 354345435345, \n\t\"transfer_date\": \"2012-04-23T18:25:43.511Z\", \n\t\"contract_years\": 2, \n\t\"cost\": 30000000, \n\t\"player_id\": \"5e07db7531c874584673aa12\"\n\t\n}",
+					"raw": "{\n\t\"origin_team_id\": 2, \n\t\"destiny_team_id\": 1, \n\t\"transfer_date\": \"2012-04-23\", \n\t\"contract_years\": 2, \n\t\"cost\": 30000000, \n\t\"player_id\": \"5e109fc3d9e6f300105fdbf2\"\n\t\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -285,13 +286,13 @@
 					},
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\n\t\"origin_team_id\": 446546464698, \n\t\"destiny_team_id\": 354345435345, \n\t\"transfer_date\": \"2012-04-23T18:25:43.511Z\", \n\t\"contract_years\": 2, \n\t\"cost\": 10, \n\t\"player_id\": \"5e06517fa5af073d7f4bc566\"\n\t\n}",
+					"raw": "{\n    \"origin_team_id\": 2,\n    \"destiny_team_id\": 1,\n    \"transfer_date\": \"2012-04-23\",\n    \"contract_years\": 0,\n    \"cost\": 0,\n    \"player_id\": \"5e109fc3d9e6f300105fdbf2\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -299,7 +300,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfer/5dfff83491492f5897d56a87",
+					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfer/5e10c264cc7634000f336dfb",
 					"protocol": "https",
 					"host": [
 						"mercadofichajes",
@@ -310,7 +311,7 @@
 						"api",
 						"v1",
 						"transfer",
-						"5dfff83491492f5897d56a87"
+						"5e10c264cc7634000f336dfb"
 					]
 				}
 			},
@@ -323,12 +324,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDdkYmI0ZDFhMTQ2MDAxMmNlY2ZkYyIsImlhdCI6MTU3NzU3MzMwNCwiZXhwIjoxNTc3NTc2OTA0fQ.DzkltUKsPiwgrVwgbfEApv1TYQn4576_rjae8hrWqXQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTA2MTZhY2NhMWYwMDAwZjdmNTZmMCIsImlhdCI6MTU3ODE1NjIyNiwiZXhwIjoxNTc4MTU5ODI2fQ.twg80vUrctvltwafFjeLU4nBym1n3VAqiIshNXe4Ibc",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfer/5dfff83491492f5897d56a8c",
+					"raw": "https://mercadofichajes.herokuapp.com/api/v1/transfer/5e10c264cc7634000f336dfb",
 					"protocol": "https",
 					"host": [
 						"mercadofichajes",
@@ -339,7 +340,7 @@
 						"api",
 						"v1",
 						"transfer",
-						"5dfff83491492f5897d56a8c"
+						"5e10c264cc7634000f336dfb"
 					]
 				}
 			},
