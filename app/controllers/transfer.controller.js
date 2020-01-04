@@ -126,8 +126,6 @@ module.exports.postTransfer= async function(request, response){
             
             //UPDATE EQUIPO DEL JUGADOR
             player.team_id = transfer.destiny_team_id
-            player.goals.assists = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin asistencias. Eliminar cuando lo diga nono
-            player.cards.red = 1 //TODO: Se le cambia a 1 pues no permite grabar futbolistas sin tarjetas rojas. Eliminar cuando lo diga nono
             await playersApi.updatePlayer(player, token)
 
             //UPDATE PRESUPUESTO Y VALOR DE LOS EQUIPOS DE ORIGEN Y DESTINO
