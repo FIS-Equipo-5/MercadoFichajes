@@ -104,14 +104,7 @@ module.exports.postTransfer= async function(request, response){
     
     //GET EQUIPO Y JUGADOR
     try {
-        let players = await playersApi.getPlayerById(transfer.player_id, token)
-        console.log("player: "+ player)
-        if(players.length == 0){
-            return response.status(404).send({
-                message: "Not found player with id: " + transfer.player_id
-            });
-        }
-        player = players[0]
+        player = await playersApi.getPlayerById(transfer.player_id, token)
         originTeam = await teamsApi.getTeamById(transfer.origin_team_id,token)
         destinyTeam = await teamsApi.getTeamById(transfer.destiny_team_id,token)
     } catch(error) {

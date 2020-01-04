@@ -33,7 +33,7 @@ module.exports.getPlayers = async function getPlayers(token) {
 
 module.exports.getPlayerById = async function getPlayerById(playerId, token) {
   
-    let uri = applicationConfig.teamsPlayersAPI+'player?_id='+playerId
+    let uri = applicationConfig.teamsPlayersAPI+'player/'+playerId
     console.log(Date() + " -GET "+ uri)
 
     let options = {
