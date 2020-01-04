@@ -12,8 +12,8 @@ describe("Transfer API", () => {
     describe("GET /transfers", () => {
 
         let transfers_temp = [
-            new Transfer({"origin_team_id": 1, "destiny_team_id": 2, "transfer_date": "2012-08-23T18:25:43.511Z", "contract_years": 3, "cost": 29000000.32, "player_id": 1}),
-            new Transfer({"origin_team_id": 2, "destiny_team_id": 3, "transfer_date": "2015-07-28T23:04:43.511Z", "contract_years": 4, "cost": 75055060.32, "player_id": 2})
+            new Transfer({"origin_team_id": 1, "destiny_team_id": 2, "transfer_date": "2012-08-23", "contract_years": 3, "cost": 29000000.32, "player_id": 1}),
+            new Transfer({"origin_team_id": 2, "destiny_team_id": 3, "transfer_date": "2015-07-28", "contract_years": 4, "cost": 75055060.32, "player_id": 2})
         ];
 
         beforeAll(() => {
@@ -53,7 +53,7 @@ describe("Transfer API", () => {
 
     describe("GET /transfer/:transfer_id", () => {
 
-        let transfer = new Transfer({"origin_team_id": 8, "destiny_team_id": 5, "transfer_date": new Date ("2019-08-23T18:25:43.511Z"),
+        let transfer = new Transfer({"origin_team_id": 8, "destiny_team_id": 5, "transfer_date": "2019-08-23",
             "contract_years": 2, "cost": 100044, "player_id": 6});
 
         beforeAll(() => {            
@@ -70,7 +70,7 @@ describe("Transfer API", () => {
             return request(app).get(BASE_API_PATH+"/transfer/"+id).then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body.origin_team_id).toBe(8);
-                expect(response.body.transfer_date).toBe("2019-08-23T18:25:43.511Z");
+                expect(response.body.transfer_date).toBe("2019-08-23");
                 expect(response.body.contract_years).toBe(2);
                 expect(response.body.cost).toBe(100044);
                 expect(response.body.player_id).toBe("6");
@@ -116,9 +116,9 @@ describe("Transfer API", () => {
     describe("GET /transfers/player/:player_id", () => {
 
         let transfers_player = [
-            new Transfer({"origin_team_id": 1, "destiny_team_id": 2, "transfer_date": new Date ("2012-08-23T18:25:43.511Z"), "contract_years": 3, "cost": 2000000, "player_id": 6}),
-            new Transfer({"origin_team_id": 2, "destiny_team_id": 3, "transfer_date": new Date ("2015-08-23T18:25:43.511Z"), "contract_years": 4, "cost": 15000000, "player_id": 6}),
-            new Transfer({"origin_team_id": 3, "destiny_team_id": 4, "transfer_date": new Date ("2019-08-23T18:25:43.511Z"), "contract_years": 4, "cost": 53000000, "player_id": 6})
+            new Transfer({"origin_team_id": 1, "destiny_team_id": 2, "transfer_date": "2012-08-23", "contract_years": 3, "cost": 2000000, "player_id": 6}),
+            new Transfer({"origin_team_id": 2, "destiny_team_id": 3, "transfer_date": "2015-08-23", "contract_years": 4, "cost": 15000000, "player_id": 6}),
+            new Transfer({"origin_team_id": 3, "destiny_team_id": 4, "transfer_date": "2019-08-23", "contract_years": 4, "cost": 53000000, "player_id": 6})
         ];
 
         beforeAll(() => {            
@@ -152,9 +152,9 @@ describe("Transfer API", () => {
     describe("GET /transfers/team/:destiny_team_id", () => {
 
         let team_transfers = [
-            new Transfer({"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": new Date ("2012-08-23T18:25:43.511Z"), "contract_years": 3, "cost": 2000000, "player_id": 1}),
-            new Transfer({"origin_team_id": 2, "destiny_team_id": 8, "transfer_date": new Date ("2015-08-23T18:25:43.511Z"), "contract_years": 4, "cost": 15000000, "player_id": 2}),
-            new Transfer({"origin_team_id": 3, "destiny_team_id": 8, "transfer_date": new Date ("2018-08-23T18:25:43.511Z"), "contract_years": 4, "cost": 53000000, "player_id": 3})
+            new Transfer({"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2012-08-23", "contract_years": 3, "cost": 2000000, "player_id": 1}),
+            new Transfer({"origin_team_id": 2, "destiny_team_id": 8, "transfer_date": "2015-08-23", "contract_years": 4, "cost": 15000000, "player_id": 2}),
+            new Transfer({"origin_team_id": 3, "destiny_team_id": 8, "transfer_date": "2018-08-23", "contract_years": 4, "cost": 53000000, "player_id": 3})
         ];
 
         beforeAll(() => {
@@ -186,7 +186,7 @@ describe("Transfer API", () => {
     });
 
     describe('POST /transfer', () => {
-        let transfer_post ={"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2019-08-23T18:25:43.511Z", "contract_years": 3, "cost": 2000000, "player_id": 1};
+        let transfer_post ={"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2019-08-23", "contract_years": 3, "cost": 2000000, "player_id": 1};
         let player = [{"goals":{"total":2,"assists":4},"cards":{"yellow":4,"red":4},"_id":"5e03b8ac777eb50658815fd3","player_name":"Diego Carlos","firstname":"Diego","lastname":"Carlos","position":"Deffender","nationality":"Brazil","value":15000000,"team_id":4}];
         let team = {"team_id": 354345435345, "name": "Sevilla FC", "code": 123, "logo": "https://media.api-football.com/teams/541.png", "country": "Spain", "founded": 1902, "venue_name": "Estadio Ramón Sánchez-Pizjuán", "venue_surface": "grass", "venue_address": "Calle Sevilla FC s/n", "venue_city": "Sevilla", "venue_capacity": 42500, "budget": 85000000, "value": 250000000};
 
@@ -231,7 +231,7 @@ describe("Transfer API", () => {
         });
 
         it('Should return a 400 Bad Rquest for the input Transfer', async () => {
-            transfer_temp = {"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2012-08-23T18:25:43.511Z"}
+            transfer_temp = {"origin_team_id": 1, "destiny_team_id": 8, "transfer_date": "2012-08-23"}
             return request(app).post(BASE_API_PATH + '/transfer').send(transfer_temp).then((response) => {
                 expect(response.statusCode).toBe(400);
             });
@@ -250,13 +250,13 @@ describe("Transfer API", () => {
 
     describe('PUT /transfer/:transfer_id', () => {
         
-        let transfer_put = new Transfer({"origin_team_id": 2, "destiny_team_id": 1, "transfer_date": "2013-08-23T18:25:43.511Z", "contract_years": 1, "cost": 1000000, "player_id": 1});
-        let transfer_old = new Transfer({"origin_team_id": 2, "destiny_team_id": 1, "transfer_date": "2013-08-23T18:25:43.511Z", "contract_years": 1, "cost": 500, "player_id": 1});
+        let transfer_put = new Transfer({"origin_team_id": 2, "destiny_team_id": 1, "transfer_date": "2013-08-23", "contract_years": 1, "cost": 1000000, "player_id": 1});
+        let transfer_old = new Transfer({"origin_team_id": 2, "destiny_team_id": 1, "transfer_date": "2013-08-23", "contract_years": 1, "cost": 500, "player_id": 1});
         let team = {"team_id": 354345435345, "name": "Sevilla FC", "code": 123, "logo": "https://media.api-football.com/teams/541.png", "country": "Spain", "founded": 1902, "venue_name": "Estadio Ramón Sánchez-Pizjuán", "venue_surface": "grass", "venue_address": "Calle Sevilla FC s/n", "venue_city": "Sevilla", "venue_capacity": 42500, "budget": 85000000, "value": 250000000};
         let id = transfer_put._id
         let expected_transfer = {origin_team_id: transfer_put.origin_team_id, 
             destiny_team_id: transfer_put.destiny_team_id, 
-            transfer_date: transfer_put.transfer_date.toISOString(), 
+            transfer_date: transfer_put.transfer_date, 
             contract_years: transfer_put.contract_years, 
             cost: transfer_put.cost, 
             player_id: transfer_put.player_id}
@@ -327,7 +327,7 @@ describe("Transfer API", () => {
 
     describe("DELETE /transfer/:transfer_id", () => {
 
-        let transfer_delete = new Transfer({"origin_team_id": 8, "destiny_team_id": 5, "transfer_date": new Date ("2019-08-23T18:25:43.511Z"),
+        let transfer_delete = new Transfer({"origin_team_id": 8, "destiny_team_id": 5, "transfer_date": "2019-08-23",
             "contract_years": 2, "cost": 100044, "player_id": 6});
 
         let id = transfer_delete._id

@@ -10,7 +10,7 @@ const TransferSchema = mongoose.Schema({
         required: true
     },
     transfer_date: {
-        type: Date,
+        type: String,
         required: true
     },
     contract_years: {
