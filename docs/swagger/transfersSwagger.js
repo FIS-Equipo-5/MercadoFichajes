@@ -1,7 +1,7 @@
 /**
  * @typedef Transfer
  * @property {string} transfer_id.required - transfer id - eg: 5dee74accf9a95284ba5b323
- * @property {string} transfer_date.required - tranfer date - eg: 2019-08-31’T’23:59:08Z
+ * @property {string} transfer_date.required - tranfer date - eg: 2019-08-31
  * @property {number} contract_years.required - contract years - eg: 3
  * @property {number} origin_team_id.required - player's original team id - eg: 213
  * @property {number} destiny_team_id.required - player's destiny team id - eg: 212
@@ -13,7 +13,7 @@
  * This function comment is parsed by doctrine
  * @route GET /transfers
  * @group Transfers - Operations about Transfers
- * @returns {Array.<Transfers>} 200 - An array of transfers info
+ * @returns {Array.<Transfer>} 200 - An array of transfers info
  * @returns {Error}  500 - Unexpected error 
  */
 
@@ -45,7 +45,7 @@
 
  /**
  * This function comment is parsed by doctrine
- * @route GET /transfers/{destiny_team_id}
+ * @route GET /transfers/team/{destiny_team_id}
  * @group Transfers - Operations about Transfers
  * @param {string} destiny_team_id.path.required - destiny team id - eg: 232
  * @returns {Transfer.model} 200 - Requested transfer
@@ -67,7 +67,7 @@
 
  /**
  * This function comment is parsed by doctrine
- * @route DELETE /transfers/{transfer_id}
+ * @route DELETE /transfer/{transfer_id}
  * @group Transfers - Operations about Transfers
  * @param {string} transfer_id.path.required - transfer id eg: 5dee74accf9a95284ba5b323
  * @returns {object} 204 - No content
@@ -77,7 +77,7 @@
 
  /**
  * This function comment is parsed by doctrine
- * @route GET /transfers/transfer/{transfer_id}
+ * @route GET /transfer/{transfer_id}
  * @group Transfers - Operations about Transfers
  * @param {string} transfer_id.path.required - transfer id eg: 5dee74accf9a95284ba5b323
  * @returns {Transfer.model} 200 - Requested transfer
@@ -87,7 +87,7 @@
 
  /**
  * This function comment is parsed by doctrine
- * @route GET /transfers/{player_id}
+ * @route GET /transfers/player/{player_id}
  * @group Transfers - Operations about Transfers
  * @param {string} player_id.path.required - player id - eg: 23
  * @returns {Transfer.model} 200 - Requested Transfer
