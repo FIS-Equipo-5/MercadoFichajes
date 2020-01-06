@@ -14,7 +14,7 @@
  * @route GET /transfers
  * @group Transfers - Operations about Transfers
  * @returns {Array.<Transfers>} 200 - An array of transfers info
- * @returns {Error}  500 - Unexpected error
+ * @returns {Error}  500 - Unexpected error 
  */
 
  /**

@@ -1,6 +1,6 @@
 const app = require('./server.js');
 const dbConnect = require('./db');
-const applicationConfig = require('./config/application.config.js');
+//const applicationConfig = require('./config/application.config.js');
 
 var port = (process.env.PORT || 3000);
 
@@ -20,7 +20,7 @@ dbConnect().then(
                     version: '1.0.0',
                 },
                 host: 'localhost:3000',
-                basePath: '/api/v1',
+                basePath: '/api-docs',
                 produces: [
                     "application/json"
                 ],
