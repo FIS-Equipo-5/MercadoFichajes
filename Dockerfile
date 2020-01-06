@@ -13,6 +13,7 @@ COPY index.js .
 COPY .env .
 COPY app ./app
 COPY config ./config
+COPY docs/swagger ./docs/swagger
 
 EXPOSE 3000
 CMD ["npm", "start"]
