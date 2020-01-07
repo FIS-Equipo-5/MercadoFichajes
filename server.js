@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
+const cors = require('cors')
 
 // create express app
 const app = express();
@@ -12,6 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.set('secretKey', 'authServiceApi'); // jwt secret token
+
+//set cors to be used by third parties
+app.use(cors());
 
 //jwt token is checked for all our routes
 app.use('/api', validateUser);
